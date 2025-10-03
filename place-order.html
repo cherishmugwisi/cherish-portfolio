@@ -42,6 +42,21 @@
   </div>
 
   <div class="form-row">
+  <label for="phone">Phone (WhatsApp preferred)</label>
+  <input
+    type="tel"
+    id="phone"
+    name="phone"
+    required
+    placeholder="+263 7xx xxx xxx"
+    inputmode="tel"
+    autocomplete="tel">
+  <small class="hint">Use your WhatsApp number so I can reply quickly.</small>
+  <small class="error" data-for="phone"></small>
+</div>
+
+
+  <div class="form-row">
     <label for="type">Project Type</label>
     <select id="type" name="type" required>
       <option value="">Select one...</option>
@@ -136,7 +151,8 @@
     <span>Call</span>
   </a>
 </section>
- 
+
+  
 </footer>
 </body>
 </html>
