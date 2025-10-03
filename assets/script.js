@@ -78,14 +78,13 @@ if (form) {
     }
     if (!ok) return;
 
-    // OPTIONAL: keep local demo save
     try {
       const previous = JSON.parse(localStorage.getItem('orders') || '[]');
       previous.push(data);
       localStorage.setItem('orders', JSON.stringify(previous));
     } catch {}
 
-    // Build WhatsApp link with prefilled message
+    // WhatsApp link with prefilled message
     const text = encodeURIComponent(buildWhatsAppText(data));
     const waURL = `https://wa.me/${phoneE164NoPlus}?text=${text}`;
 
