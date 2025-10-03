@@ -37,7 +37,7 @@ if (form) {
   const phoneE164NoPlus = '263788321580'; // Zimbabwe (+263) without the "+"
   const buildWhatsAppText = (data) => {
     const lines = [
-      '*New Project Enquiry from Cherish-Portfolio*',
+      '*New Project Enquiry from Cherish Portfolio*',
       '',
       `Name: ${data.name}`,
       `Email: ${data.email}`,
@@ -78,13 +78,14 @@ if (form) {
     }
     if (!ok) return;
 
+    // OPTIONAL: keep local demo save
     try {
       const previous = JSON.parse(localStorage.getItem('orders') || '[]');
       previous.push(data);
       localStorage.setItem('orders', JSON.stringify(previous));
     } catch {}
 
-    // WhatsApp link with prefilled message
+    // Build WhatsApp link with prefilled message
     const text = encodeURIComponent(buildWhatsAppText(data));
     const waURL = `https://wa.me/${phoneE164NoPlus}?text=${text}`;
 
