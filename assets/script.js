@@ -23,6 +23,12 @@ if (form) {
   const validators = {
     name: v => v.trim().length >= 2 || 'Please enter your full name.',
     email: v => /.+@.+\..+/.test(v) || 'Enter a valid email address.',
+    phone: v => {
+      const s = v.trim();
+      // Simple, friendly check: allows +, digits, spaces, dashes, parentheses; at least 7 digits total
+      const digits = (s.match(/\d/g) || []).length;
+      return (/[+\d][\d\s\-()]{6,}/.test(s) && digits >= 7) || 'Enter a valid phone number.';
+    },
     type: v => v.trim().length > 0 || 'Select a project type.',
     message: v => v.trim().length >= 10 || 'Please add at least 10 characters.',
     agree: v => v === true || 'You must agree before submitting.'
@@ -31,10 +37,11 @@ if (form) {
   const phoneE164NoPlus = '263788321580'; // Zimbabwe (+263) without the "+"
   const buildWhatsAppText = (data) => {
     const lines = [
-      '*New Project Enquiry*',
+      '*New Project Enquiry from Cherish-Portfolio*',
       '',
       `Name: ${data.name}`,
       `Email: ${data.email}`,
+      `Client Phone: ${data.phone}`,
       `Project Type: ${data.type}`,
       data.budget ? `Budget (USD): ${data.budget}` : null,
       '',
@@ -50,6 +57,7 @@ if (form) {
     const data = {
       name: form.name.value,
       email: form.email.value,
+      phone: form.phone.value,
       type: form.type.value,
       budget: form.budget.value,
       message: form.message.value,
@@ -70,7 +78,7 @@ if (form) {
     }
     if (!ok) return;
 
-    // OPTIONAL: keep your local demo save (remove this block if you don't want it)
+    // OPTIONAL: keep local demo save
     try {
       const previous = JSON.parse(localStorage.getItem('orders') || '[]');
       previous.push(data);
@@ -81,21 +89,15 @@ if (form) {
     const text = encodeURIComponent(buildWhatsAppText(data));
     const waURL = `https://wa.me/${phoneE164NoPlus}?text=${text}`;
 
-    // Prefer same-tab navigation on mobile (better handoff to the app)
-    // and a new tab on desktop. Simple heuristic:
+    // Mobile: same tab; Desktop: new tab (fallback to same tab if blocked)
     const isMobile = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
     if (isMobile) {
       window.location.href = waURL;
     } else {
       const w = window.open(waURL, '_blank', 'noopener,noreferrer');
-      if (!w) {
-        // popup blocked — fallback to same tab
-        window.location.href = waURL;
-      }
+      if (!w) window.location.href = waURL;
     }
 
-    // Show your success note (optional) and reset
     const success = document.querySelector('.form-success');
     if (success) {
       success.textContent = 'Opening WhatsApp… if nothing happens, please click the WhatsApp button again.';
